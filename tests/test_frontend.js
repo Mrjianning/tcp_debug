@@ -122,6 +122,8 @@ for (const template of [
 assert(appVue.includes('/api/choose-directory'), 'export path buttons should request the backend directory picker');
 assert(appVue.includes('chooseDirectoryPath'), 'frontend should isolate directory picker request in chooseDirectoryPath');
 assert(!appVue.includes('window.prompt'), 'export path buttons should not use prompt after directory picker support');
+assert(appVue.includes('/api/json/update-set-params'), 'parameter reads should persist actual params to setParams.json');
+assert(appVue.includes('saveSetParamsTemplate'), 'frontend should isolate setParams.json persistence in saveSetParamsTemplate');
 
 const themeCss = readText('src', 'frontend', 'src', 'theme.css');
 for (const expected of [

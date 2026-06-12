@@ -24,6 +24,7 @@ WS_MAX_SIZE = None
 # 当前资源所在目录。PyInstaller 打包后资源会被解压到 _MEIPASS。
 BASE_DIR = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
 DIST_DIR = os.path.join(BASE_DIR, "dist")
+SET_PARAMS_TEMPLATE_FILE = os.path.join(BASE_DIR, "json", "setParams.json")
 NETPLAN_FILE = os.environ.get("TCP_DEBUG_NETPLAN_FILE", "/etc/netplan/01-network-manager-all.yaml")
 
 
@@ -140,6 +141,30 @@ def parse_http_json_body(request_text):
     if not body.strip():
         return {}
     return json.loads(body)
+
+
+def update_set_params_template(received_data, template_path=None):
+    if not isinstance(received_data, dict):
+        raise ValueError("参数数据必须是JSON对象")
+
+    target_path = template_path or SET_PARAMS_TEMPLATE_FILE
+    with open(target_path, "r", encoding="utf-8") as f:
+        template = json.load(f)
+
+    if not isinstance(template, dict):
+        raise ValueError("参数写入模板必须是JSON对象")
+    params = template.get("params")
+    if not isinstance(params, dict):
+        params = {}
+        template["params"] = params
+    params["data"] = received_data
+
+    temp_path = f"{target_path}.tmp"
+    with open(temp_path, "w", encoding="utf-8") as f:
+        json.dump(template, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    os.replace(temp_path, target_path)
+    return template
 
 
 def run_command(command, timeout=30):
@@ -481,6 +506,14 @@ def build_http_response(request_text, client_ip=None):
             return build_json_response({"path": choose_directory_path(title)})
         except Exception as e:
             return build_json_response({"path": "", "error": str(e)}, "500 Internal Server Error")
+
+    if method == "POST" and raw_path == "/api/json/update-set-params":
+        try:
+            payload = parse_http_json_body(request_text)
+            update_set_params_template(payload.get("data"))
+            return build_json_response({"ok": True})
+        except Exception as e:
+            return build_json_response({"ok": False, "error": str(e)}, "400 Bad Request")
 
     if method == "GET" and raw_path == "/api/network/interfaces":
         try:

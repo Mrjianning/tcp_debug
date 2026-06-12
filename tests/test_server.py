@@ -433,6 +433,62 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('"ok": false', response)
         self.assertIn('"error": "netplan apply failed"', response)
 
+    async def test_update_set_params_template_replaces_only_params_data(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            target = os.path.join(temp_dir, "setParams.json")
+            original = {
+                "moduleType": 8,
+                "eventType": 5,
+                "params": {
+                    "operationCommand": 6,
+                    "paramType": 1,
+                    "engineName": "XrayEngine",
+                    "data": {"old": True},
+                },
+            }
+            received_data = {"actual": {"threshold": 12}, "enabled": 1}
+            with open(target, "w", encoding="utf-8") as f:
+                json.dump(original, f)
+
+            updated = server.update_set_params_template(received_data, template_path=target)
+
+            with open(target, "r", encoding="utf-8") as f:
+                saved = json.load(f)
+            self.assertEqual(updated["params"]["data"], received_data)
+            self.assertEqual(saved["params"]["data"], received_data)
+            self.assertEqual(saved["moduleType"], 8)
+            self.assertEqual(saved["eventType"], 5)
+            self.assertEqual(saved["params"]["operationCommand"], 6)
+            self.assertEqual(saved["params"]["paramType"], 1)
+            self.assertEqual(saved["params"]["engineName"], "XrayEngine")
+
+    async def test_build_http_response_updates_set_params_template(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            target = os.path.join(temp_dir, "setParams.json")
+            with open(target, "w", encoding="utf-8") as f:
+                json.dump({
+                    "moduleType": 8,
+                    "eventType": 5,
+                    "params": {
+                        "operationCommand": 6,
+                        "paramType": 1,
+                        "engineName": "XrayEngine",
+                        "data": {"old": True},
+                    },
+                }, f)
+            body = json.dumps({"data": {"newParam": 42}})
+
+            with mock.patch.object(server, "SET_PARAMS_TEMPLATE_FILE", target):
+                response = server.build_http_response(
+                    f"POST /api/json/update-set-params HTTP/1.1\r\nContent-Length: {len(body)}\r\n\r\n{body}"
+                )
+
+            with open(target, "r", encoding="utf-8") as f:
+                saved = json.load(f)
+            self.assertIn("HTTP/1.1 200 OK", response)
+            self.assertIn('"ok": true', response)
+            self.assertEqual(saved["params"]["data"], {"newParam": 42})
+
     async def test_export_mapping_file_decodes_base64_to_output_path(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             message = {

@@ -374,6 +374,12 @@ async function fillSetParamsFromParamReadResponse(data) {
   jsonText.value = JSON.stringify(buildSetParamsFromReceivedData(template, latestParamReadData.value), null, 2);
   activeKey.value = 'set';
   log('已根据参数读取响应填充参数写入 JSON');
+  try {
+    await saveSetParamsTemplate(latestParamReadData.value);
+    log('已保存实际参数到 setParams.json');
+  } catch (err) {
+    log(`保存实际参数到 setParams.json 失败: ${err.message}`);
+  }
 }
 
 function openMappingFilePicker() {
@@ -526,6 +532,13 @@ async function fetchNetworkJson(url, options = {}) {
   const data = await response.json();
   if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
   return data;
+}
+
+async function saveSetParamsTemplate(receivedData) {
+  return fetchNetworkJson('/api/json/update-set-params', {
+    method: 'POST',
+    body: JSON.stringify({ data: receivedData }),
+  });
 }
 
 async function showNetworkManager() {
