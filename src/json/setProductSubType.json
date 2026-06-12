@@ -1,0 +1,18 @@
+{
+  "moduleType": 8,
+  "eventType": 3,
+  "deviceIdx": 0,
+  "deviceIp": "192.168.10.120",
+  "eventTime": "2026-04-22 12:00:00.222",
+  "params": {
+    "operationCommand": 6,
+    "paramType": 3,
+    "engineName": "XrayEngine",
+    "data": {
+      "productType": 0,
+      "subProductType": "X1400_MONO0.4(27)",
+      "productTypes" : [],
+      "subProductTypes" : []
+    }
+  }
+}

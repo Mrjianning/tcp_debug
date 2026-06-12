@@ -1,0 +1,23 @@
+{
+  "moduleType": 8,
+  "eventType": 3,
+  "deviceIdx": 0,
+  "deviceIp": "192.168.10.120",
+  "eventTime": "2026-04-22 12:00:00.222",
+  "params": {
+    "operationCommand": 6,
+    "paramType": 10,
+    "engineName": "XrayEngine",
+    "data": {
+      "moduleId": 0,
+      "unitId": 0,
+      "mapIndex": 0,
+      "fileName": "map.txt",
+      "fileSize": 2048,
+      "base64Data": "U09TKFRFU1R+U09TKVRFU1Q=",
+      "outPutPath": ""
+    }
+   
+  }
+}
+

@@ -1,0 +1,124 @@
+[
+  {
+    "title": "模块类型",
+    "name": "ModuleType",
+    "items": [
+      { "name": "kUnknown", "value": "0", "description": "未知模块" },
+      { "name": "kMaster", "value": "1", "description": "整机模块" },
+      { "name": "kNozzle", "value": "2", "description": "喷阀模块" },
+      { "name": "kSensor", "value": "3", "description": "传感器模块" },
+      { "name": "kTrigger", "value": "4", "description": "触发模块" },
+      { "name": "kImageEngine", "value": "5", "description": "图像引擎模块" },
+      { "name": "kControl", "value": "6", "description": "控制模块" },
+      { "name": "kXray", "value": "7", "description": "射线模块" },
+      { "name": "kDataHost", "value": "8", "description": "数据主机模块" },
+      { "name": "kDebug", "value": "255", "description": "调试模块" }
+    ]
+  },
+  {
+    "title": "操作指令",
+    "name": "OperationCommand",
+    "items": [
+      { "name": "kUnknown", "value": "0", "description": "未知指令" },
+      { "name": "kInitialize", "value": "1", "description": "初始化（通用）" },
+      { "name": "kStart", "value": "2", "description": "开始（通用）" },
+      { "name": "kStop", "value": "3", "description": "停止（通用）" },
+      { "name": "kReboot", "value": "4", "description": "重启程序" },
+      { "name": "kParamRequest", "value": "5", "description": "参数获取" },
+      { "name": "kParamConfigure", "value": "6", "description": "参数配置" },
+      { "name": "kNozzleSelfCheck", "value": "10", "description": "喷阀自检（喷阀专用）" },
+      { "name": "kUpdateAirEmpty", "value": "20", "description": "更新本底空场（传感器专用）" },
+      { "name": "kUpdateEmpty", "value": "21", "description": "本底更新（传感器专用）" },
+      { "name": "kUpdateAir", "value": "22", "description": "空场更新（传感器专用）" },
+      { "name": "kSensorCleanStart", "value": "30", "description": "开启传感器清洁（控制模块专用）" },
+      { "name": "kSensorCleanStop", "value": "31", "description": "关闭传感器清洁" },
+      { "name": "kXrayCleanStart", "value": "32", "description": "开启射线口清洁" },
+      { "name": "kXrayCleanStop", "value": "33", "description": "关闭射线口清洁" },
+      { "name": "kCoolerCleanStart", "value": "34", "description": "开启冷却器清洁" },
+      { "name": "kCoolerCleanStop", "value": "35", "description": "关闭冷却器清洁" },
+      { "name": "kScraperCleanStart", "value": "36", "description": "开启刮料清洁" },
+      { "name": "kScraperCleanStop", "value": "37", "description": "关闭刮料清洁" },
+      { "name": "kFeederMonitorStart", "value": "38", "description": "开启均匀装置" },
+      { "name": "kFeederMonitorStop", "value": "39", "description": "关闭均匀装置" },
+      { "name": "kVirbreStart", "value": "41", "description": "振动盘开启" },
+      { "name": "kVirbreStop", "value": "42", "description": "振动盘关闭" },
+      { "name": "kBeltStart", "value": "43", "description": "皮带开启" },
+      { "name": "kBeltStop", "value": "44", "description": "皮带关闭" },
+      { "name": "kXrayTrainStart", "value": "60", "description": "开启训管（射线专用）" },
+      { "name": "kXrayTrainStop", "value": "61", "description": "停止训管" },
+      { "name": "kXrayConfigureInfo", "value": "62", "description": "配置射线信息（射线专用）" },
+      { "name": "kXrayOpen", "value": "63", "description": "开启射线（射线专用）" },
+      { "name": "kXrayClose", "value": "64", "description": "关闭射线（射线专用）" }
+    ]
+  },
+  {
+    "title": "操作状态",
+    "name": "OperationResult",
+    "items": [
+      { "name": "kUnknown", "value": "0", "description": "未知状态" },
+      { "name": "kProcessing", "value": "1", "description": "执行中" },
+      { "name": "kSuccess", "value": "2", "description": "执行成功" },
+      { "name": "kFailed", "value": "3", "description": "执行失败" },
+      { "name": "kInvalidParams", "value": "4", "description": "参数错误" },
+      { "name": "kUnsupportedCmd", "value": "5", "description": "不支持的指令" },
+      { "name": "kPermissionDenied", "value": "6", "description": "当前状态不允许此操作" },
+      { "name": "kTimeout", "value": "7", "description": "响应超时" },
+      { "name": "kDeviceBusy", "value": "8", "description": "设备忙" },
+      { "name": "kHardwareError", "value": "9", "description": "硬件故障" }
+    ]
+  },
+  {
+    "title": "模块状态",
+    "name": "ModuleState",
+    "items": [
+      { "name": "kUnknown", "value": "0", "description": "未知" },
+      { "name": "kInit", "value": "1", "description": "初始化" },
+      { "name": "kIdle", "value": "2", "description": "待机" },
+      { "name": "kStarting", "value": "3", "description": "启动中" },
+      { "name": "kRunning", "value": "4", "description": "运行中" },
+      { "name": "kStopping", "value": "5", "description": "停止中" },
+      { "name": "kError", "value": "6", "description": "错误" },
+      { "name": "kWarn", "value": "7", "description": "预警" },
+      { "name": "kAlarm", "value": "8", "description": "报警" }
+    ]
+  },
+  {
+    "title": "事件级别",
+    "name": "EventLevel",
+    "items": [
+      { "name": "kNone", "value": "0", "description": "无级别" },
+      { "name": "kError", "value": "1", "description": "错误（最高优先级）" },
+      { "name": "kWarning", "value": "2", "description": "警告" },
+      { "name": "kInfo", "value": "3", "description": "普通信息" },
+      { "name": "kTrace", "value": "4", "description": "流程追踪" },
+      { "name": "kVerbose", "value": "5", "description": "详细调试（最低优先级）" }
+    ]
+  },
+  {
+    "title": "事件类型",
+    "name": "EventType",
+    "items": [
+      { "name": "kUnknown", "value": "0", "description": "未知事件" },
+      { "name": "kLog", "value": "1", "description": "操作事件（日志类）" },
+      { "name": "kState", "value": "2", "description": "状态事件（状态变更）" },
+      { "name": "kCommand", "value": "3", "description": "指令事件（指令下发/响应）" },
+      { "name": "kCustom", "value": "4", "description": "数据事件（业务数据上报）" },
+      { "name": "kParam", "value": "5", "description": "传参数事件" }
+    ]
+  },
+  {
+    "title": "参数下发类型",
+    "name": "ParameterType",
+    "items": [
+      { "name": "kUnknown", "value": "0", "description": "未知类型" },
+      { "name": "kConfiguration", "value": "1", "description": "配置参数" },
+      { "name": "kRealTime", "value": "2", "description": "运行时的实时动态参数" },
+      { "name": "kMapFile", "value": "10", "description": "文件配置下发，例：映射文件，划线法参数" },
+      { "name": "kDualAvgFile", "value": "11", "description": "文件配置下发，例：映射文件，划线法参数" },
+      { "name": "kModelList", "value": "20", "description": "模型列表" },
+      { "name": "KModelAdd", "value": "21", "description": "新增模型" },
+      { "name": "KModelupdate", "value": "22", "description": "新修改模型" },
+      { "name": "KModeldelete", "value": "23", "description": "删除模型" }
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "moduleType": 8,
+  "eventType": 3,
+  "deviceIdx": 0,
+  "deviceIp": "192.168.10.120",
+  "eventTime": "2026-04-22 12:00:00.222",
+  "params": {
+    "operationCommand": 6,
+    "paramType": 23,
+    "engineName": "XrayEngine",
+    "data": {
+      "modelType": 1,
+      "modelId": 1001
+    }
+  }
+}
+
+

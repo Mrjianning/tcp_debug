@@ -1,0 +1,32 @@
+{
+  "moduleType": 8,
+  "eventType": 3,
+  "deviceIdx": 0,
+  "deviceIp": "192.168.10.120",
+  "eventTime": "2026-04-22 12:00:00.222",
+  "params": {
+    "operationCommand": 6,
+    "paramType": 21,
+    "engineName": "XrayEngine",
+    "data": {
+      "detectModelList": [],
+      "segmentModelList": [],
+      "recModelList": [
+        {
+          "modelBaseParam": {
+            "modelType": 0,
+            "modelName": "矿石识别模型",
+            "modelNote": "",
+            "modelSize": 31457280,
+            "modelBase64Data": "UkVDT0dOSVRJT05fQkFTRTY0",
+            "gpuSeries": "Orin"
+          },
+          "threshold": 0.8,
+          "uniformizeType": 1,
+          "interType": 2,
+          "backgroundType": 0
+        }
+      ]
+    }
+  }
+}

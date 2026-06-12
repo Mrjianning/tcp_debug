@@ -1,0 +1,29 @@
+{
+  "moduleType": 8,
+  "eventType": 3,
+  "deviceIdx": 0,
+  "deviceIp": "192.168.10.120",
+  "eventTime": "2026-04-22 12:00:00.222",
+  "params": {
+    "operationCommand": 6,
+    "paramType": 21,
+    "engineName": "XrayEngine",
+    "data": {
+      "detectModelList": [],
+      "segmentModelList": [
+        {
+          "modelBaseParam": {
+            "modelType": 2,
+            "modelName": "矿石分割模型",
+            "modelNote": "",
+            "modelSize": 67108864,
+            "modelBase64Data": "U0VHTUVOVF9CQVNFNjQ=",
+            "gpuSeries": "Orin"
+          },
+          "confidenceThreshold": 0.7
+        }
+      ],
+      "recModelList": []
+    }
+  }
+}

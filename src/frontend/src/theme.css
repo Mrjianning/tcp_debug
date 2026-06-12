@@ -1,0 +1,573 @@
+:root {
+  --ubuntu-orange: #e95420;
+  --ubuntu-orange-soft: #fff0e9;
+  --ubuntu-aubergine: #2c001e;
+  --ubuntu-aubergine-2: #3d1230;
+  --ubuntu-warm-gray: #f4f3f1;
+  --ubuntu-panel: #ffffff;
+  --ubuntu-panel-2: #faf9f7;
+  --ubuntu-border: #dedbd6;
+  --ubuntu-border-strong: #c9c5be;
+  --ubuntu-text: #2d2b28;
+  --ubuntu-muted: #6f6a63;
+  --terminal-bg: #171421;
+  --terminal-purple: #2c001e;
+  --terminal-text: #f4f4f4;
+  --terminal-green: #8ff0a4;
+  --terminal-yellow: #f9f06b;
+  --terminal-red: #ff7b63;
+  --terminal-blue: #99c1f1;
+  --shadow-soft: 0 16px 40px rgba(44, 0, 30, 0.08);
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 1180px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(233, 84, 32, 0.1), transparent 320px),
+    linear-gradient(180deg, #fbfaf8 0%, var(--ubuntu-warm-gray) 100%);
+  color: var(--ubuntu-text);
+  font-family: "Ubuntu", "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+}
+
+button,
+input,
+textarea {
+  letter-spacing: 0;
+}
+
+.ubuntu-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100vh;
+  min-height: 0;
+  padding: 14px;
+  overflow: hidden;
+}
+
+.ubuntu-topbar {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.35fr) minmax(360px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--ubuntu-border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow-soft);
+}
+
+.app-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.window-dots,
+.terminal-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot,
+.terminal-dots span {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.dot.close { background: #ff5f57; }
+.dot.minimize { background: #ffbd2e; }
+.dot.maximize { background: #28c840; }
+
+.brand-title {
+  color: var(--ubuntu-text);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.brand-subtitle {
+  margin-top: 3px;
+  color: var(--ubuntu-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.connection-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.connection-pill,
+.summary-item {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 4px 10px;
+  border: 1px solid var(--ubuntu-border);
+  border-radius: 999px;
+  background: var(--ubuntu-panel-2);
+  color: var(--ubuntu-muted);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.connection-pill.online {
+  border-color: rgba(46, 160, 67, 0.35);
+  background: #eaf8ee;
+  color: #1b7f3a;
+}
+
+.connection-pill.offline {
+  border-color: rgba(233, 84, 32, 0.28);
+  background: var(--ubuntu-orange-soft);
+  color: var(--ubuntu-orange);
+}
+
+.connection-form {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ubuntu-workspace {
+  display: grid;
+  grid-template-columns: 286px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 12px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.workspace-main {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editor-log-grid {
+  display: grid;
+  grid-template-columns: minmax(420px, 0.92fr) minmax(520px, 1.08fr);
+  gap: 12px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ubuntu-card {
+  border: 1px solid var(--ubuntu-border);
+  border-radius: var(--radius);
+  background: var(--ubuntu-panel);
+  box-shadow: var(--shadow-soft);
+}
+
+.command-palette {
+  align-self: start;
+  max-height: 100%;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+}
+
+.palette-header,
+.panel-titlebar,
+.terminal-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.palette-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ubuntu-border);
+  color: var(--ubuntu-text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.command-group {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ubuntu-border);
+}
+
+.command-group:last-child {
+  border-bottom: none;
+}
+
+.command-group-title,
+.control-title {
+  margin-bottom: 8px;
+  color: var(--ubuntu-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.command-buttons,
+.checkbox-row,
+.control-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.log-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  padding: 12px;
+}
+
+.control-actions {
+  justify-content: flex-end;
+}
+
+.json-panel,
+.terminal-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+  padding: 12px;
+}
+
+.json-panel {
+  overflow: hidden;
+}
+
+.panel-title {
+  color: var(--ubuntu-text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.panel-subtitle {
+  margin-top: 2px;
+  color: var(--ubuntu-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.json-editor {
+  min-height: 0;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.json-editor :deep(textarea) {
+  height: 100%;
+  min-height: 100%;
+  overflow: auto;
+  border: 1px solid var(--ubuntu-border);
+  background: #fffefc;
+  color: var(--ubuntu-text);
+  font-family: "Cascadia Mono", "Consolas", "Microsoft YaHei", monospace;
+  font-size: 13px;
+  line-height: 1.58;
+}
+
+.terminal-panel {
+  padding: 0;
+  overflow: hidden;
+  border-color: #2b2634;
+  background: var(--terminal-bg);
+}
+
+.terminal-titlebar {
+  justify-content: flex-start;
+  min-height: 48px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #332b3f;
+  background: linear-gradient(180deg, #3d3647 0%, #2b2634 100%);
+}
+
+.terminal-titlebar .panel-title {
+  color: #ffffff;
+}
+
+.terminal-titlebar .panel-subtitle {
+  color: #c9c2d1;
+}
+
+.terminal-dots span:nth-child(1) { background: #ff5f57; }
+.terminal-dots span:nth-child(2) { background: #ffbd2e; }
+.terminal-dots span:nth-child(3) { background: #28c840; }
+
+.terminal-window {
+  overflow: auto;
+  min-height: 0;
+  padding: 12px 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 160px),
+    var(--terminal-bg);
+  color: var(--terminal-text);
+  font-family: "Ubuntu Mono", "Cascadia Mono", "Consolas", "Microsoft YaHei", monospace;
+  font-size: 13px;
+  line-height: 1.58;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.log-line {
+  display: block;
+  min-height: 21px;
+  padding-left: 10px;
+  border-left: 3px solid transparent;
+}
+
+.log-system { color: var(--terminal-blue); border-left-color: rgba(153, 193, 241, 0.7); }
+.log-ERROR { color: var(--terminal-red); border-left-color: rgba(255, 123, 99, 0.8); }
+.log-WARNING { color: var(--terminal-yellow); border-left-color: rgba(249, 240, 107, 0.8); }
+.log-INFO { color: var(--terminal-green); border-left-color: rgba(143, 240, 164, 0.8); }
+.log-TRACE { color: #78aeed; border-left-color: rgba(120, 174, 237, 0.7); }
+.log-VERBOSE { color: #c0b8c7; border-left-color: rgba(192, 184, 199, 0.55); }
+.log-raw { color: var(--terminal-text); border-left-color: rgba(244, 244, 244, 0.4); }
+
+.modal-section {
+  margin-bottom: 12px;
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(110px, 1fr));
+  gap: 9px;
+  margin-bottom: 10px;
+}
+
+.field-cell {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-cell > span {
+  color: var(--ubuntu-muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.field-cell small {
+  color: #9b948c;
+  font-family: "Ubuntu Mono", "Cascadia Mono", "Consolas", monospace;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.unit-table {
+  overflow: auto;
+  border: 1px solid var(--ubuntu-border);
+  border-radius: 8px;
+  background: #fffefc;
+}
+
+.unit-table-header,
+.unit-row {
+  display: grid;
+  grid-template-columns: 80px 150px 100px 90px minmax(160px, 1fr) 70px;
+  gap: 8px;
+  align-items: center;
+}
+
+.unit-table-header {
+  min-width: 690px;
+  padding: 8px 10px;
+  background: var(--ubuntu-panel-2);
+  color: var(--ubuntu-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.unit-row {
+  min-width: 690px;
+  padding: 8px 0;
+  margin: 0 10px;
+  border-top: 1px solid var(--ubuntu-border);
+}
+
+.map-file-list {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ubuntu-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.network-manager {
+  display: grid;
+  grid-template-rows: auto auto minmax(220px, 0.95fr) minmax(190px, 0.8fr);
+  gap: 12px;
+  max-height: 76vh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.network-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.network-alert {
+  margin: 0;
+}
+
+.network-table {
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid var(--ubuntu-border);
+  border-radius: 8px;
+  background: #fffefc;
+}
+
+.network-table-header,
+.network-row {
+  display: grid;
+  grid-template-columns: 54px 120px 145px 160px 110px 110px 150px 170px;
+  gap: 10px;
+  align-items: center;
+  min-width: 1090px;
+}
+
+.network-table-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--ubuntu-border);
+  background: var(--ubuntu-panel-2);
+  color: var(--ubuntu-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.network-row {
+  margin: 0 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--ubuntu-border);
+  font-size: 12px;
+}
+
+.network-row:last-child {
+  border-bottom: none;
+}
+
+.network-name,
+.network-ip,
+.network-mac {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.network-name {
+  color: var(--ubuntu-text);
+  font-weight: 800;
+}
+
+.network-ip,
+.network-mac {
+  color: var(--ubuntu-muted);
+  font-family: "Ubuntu Mono", "Cascadia Mono", "Consolas", monospace;
+  font-weight: 700;
+}
+
+.network-muted {
+  color: #9b948c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.network-preview {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+  padding: 12px;
+  border: 1px solid #2b2634;
+  border-radius: 8px;
+  background: var(--terminal-bg);
+}
+
+.network-preview .panel-title {
+  color: #fff;
+}
+
+.network-preview .panel-subtitle {
+  color: #c9c2d1;
+}
+
+.network-preview pre {
+  min-height: 0;
+  margin: 10px 0 0;
+  overflow: auto;
+  color: var(--terminal-green);
+  font-family: "Ubuntu Mono", "Cascadia Mono", "Consolas", "Microsoft YaHei", monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.ubuntu-shell :deep(.n-button) {
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.ubuntu-shell :deep(.n-tag) {
+  font-weight: 700;
+}
+
+.ubuntu-shell :deep(.n-checkbox__label) {
+  color: var(--ubuntu-text);
+  font-size: 12px;
+}
+
+@media (max-width: 1280px) {
+  body {
+    min-width: 0;
+  }
+
+  .ubuntu-topbar,
+  .ubuntu-workspace,
+  .editor-log-grid,
+  .log-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .ubuntu-workspace {
+    min-height: 0;
+  }
+
+  .connection-form {
+    justify-content: flex-start;
+  }
+}
