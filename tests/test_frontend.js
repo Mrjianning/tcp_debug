@@ -188,7 +188,9 @@ assert(buildBat.includes('call npm run build'), 'Windows build script should cal
     'buildDeleteModelCommand',
     'buildSetParamsFromReceivedData',
     'formatReceivedLogMessage',
+    'getJectorSystemParam',
     'normalizeJectorSystemParam',
+    'setJectorSystemParam',
     'shouldDisplayMessage',
   ]) {
     assert(typeof protocol[fn] === 'function', `protocol.mjs should export ${fn}`);
@@ -232,6 +234,48 @@ assert(buildBat.includes('call npm run build'), 'Windows build script should cal
 
   assert(!protocol.shouldDisplayMessage({ _type: 'json', data: { eventType: 4 } }, new Set([4])), 'hidden event types should be filtered');
   assert(protocol.shouldDisplayMessage({ _type: 'system', msg: '连接成功' }, new Set([4])), 'system messages should always display');
+
+  const newParamData = {
+    algorithmBasicParam: {
+      imageEngine: 'XrayEngine(High)',
+      jectorSystemParam: {
+        enableSelfCheck: 1,
+        maxNozzleCount: 512,
+        jectorModules: [
+          {
+            moduleId: 0,
+            sprayWhat: 0,
+            jectorUnits: [{ unitId: 1, controllerIp: '192.168.3.88', controllerPort: 5000 }],
+          },
+        ],
+      },
+    },
+  };
+  const oldParamData = {
+    jectorSystemParam: {
+      enableSelfCheck: 0,
+      jectorModules: [{ moduleId: 1, sprayWhat: 2, jectorUnits: [] }],
+    },
+  };
+  assert(protocol.getJectorSystemParam(newParamData).enableSelfCheck === 1, 'new param structure should expose nested jectorSystemParam');
+  assert(protocol.getJectorSystemParam(oldParamData).enableSelfCheck === 0, 'old param structure should still expose top-level jectorSystemParam');
+
+  const editedJectorSystem = {
+    enableSelfCheck: 0,
+    maxNozzleCount: 128,
+    jectorModules: [{ moduleId: 9, sprayWhat: 2, jectorUnits: [] }],
+  };
+  const newApplied = protocol.buildSetParamsFromReceivedData({ params: { data: {} } }, newParamData, editedJectorSystem);
+  assert(
+    newApplied.params.data.algorithmBasicParam.jectorSystemParam.maxNozzleCount === 128,
+    'new param structure should write edited jectorSystemParam under algorithmBasicParam',
+  );
+  assert(
+    !Object.prototype.hasOwnProperty.call(newApplied.params.data, 'jectorSystemParam'),
+    'new param structure should not create legacy top-level jectorSystemParam when nested location exists',
+  );
+  const oldApplied = protocol.buildSetParamsFromReceivedData({ params: { data: {} } }, oldParamData, editedJectorSystem);
+  assert(oldApplied.params.data.jectorSystemParam.maxNozzleCount === 128, 'old param structure should keep writing top-level jectorSystemParam');
 
   console.log('Frontend Vue migration tests OK');
 })();

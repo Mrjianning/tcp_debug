@@ -9,183 +9,171 @@
     "paramType": 1,
     "engineName": "XrayEngine",
     "data": {
-      "productParam": {
-        "productType": 0,
-        "subProductType": "X1400_MONO0.4(27)",
-        "productTypes": [],
-        "subProductTypes": []
-      },
-      "sensorConnectParam": [
-        {
-          "systemType": 2,
+      "algorithmBasicParam": {
+        "algorithmChoice": 0,
+        "backgroundThreshold": 52000,
+        "cameraParam": {
+          "cameraIsEnableImagingAnalysis": 0,
+          "cameraSelectInputChannel": 0
+        },
+        "debugHeight": 0,
+        "detectModelName": "detect_xray_h128_w2560_unify_2.engine",
+        "dilateSize": 5,
+        "engineType": 0,
+        "erodeSize": 5,
+        "extractMethod": 5,
+        "gpuCardIndex": 0,
+        "granuDistLowerBound": 10,
+        "granuDistSegments": 5,
+        "granuDistUpperBound": 60,
+        "imageEngine": "XrayEngine(High)",
+        "isSaveWithoutStone": 0,
+        "jectorSystemParam": {
+          "ejectorModuleCount": 2,
+          "enableSelfCheck": 1,
+          "jectorModules": [
+            {
+              "ejectorLayout": 0,
+              "electricalDelayMs": 0,
+              "isMergeSignal": 0,
+              "jectorUnits": [
+                {
+                  "controllerIp": "192.168.3.88",
+                  "controllerPort": 5000,
+                  "mapfiles": [],
+                  "nozzleCount": 0,
+                  "unitId": 1,
+                  "valveRowIndex": 0
+                }
+              ],
+              "moduleId": 0,
+              "sprayWhat": 0
+            },
+            {
+              "ejectorLayout": 0,
+              "electricalDelayMs": 0,
+              "isMergeSignal": 0,
+              "jectorUnits": [
+                {
+                  "controllerIp": "192.168.3.90",
+                  "controllerPort": 5000,
+                  "mapfiles": [],
+                  "nozzleCount": 0,
+                  "unitId": 2,
+                  "valveRowIndex": 0
+                }
+              ],
+              "moduleId": 1,
+              "sprayWhat": 2
+            }
+          ],
+          "maxNozzleCount": 512,
+          "maxSprayDurationMs": 100,
+          "minSprayDurationMs": 0,
+          "valveCloseDelayMs": 0
+        },
+        "machineGeometryParam": {
+          "imageToSprayDistance": 245,
+          "imagingSpeed": 1468,
+          "imagingToSprayAvgSpeed": 2053,
+          "imagingWidth": 2764.60009765625,
+          "rayToStoneDistance": 547,
+          "sensorLowToHighDistance": 0,
+          "sprayAdvanceUs": 0,
+          "stoneToSensorDistance": 155
+        },
+        "mixEngineEnabled": 0,
+        "mixMapMinArea": 0,
+        "mixVaildVision": "",
+        "moveStoneHeightThreshold": 0,
+        "moveStoneOffsetRate": 0,
+        "overSprayRadius": 4,
+        "prePartSprayHeight": 20,
+        "printMark": 0,
+        "recModelBigIndex": -1,
+        "recModelSmallIndex": -1,
+        "reduceSprayOutLevel": 1,
+        "rtInfoUpdateInterval": 10,
+        "segmentModelName": "X_ray_newmodel_2.0.engine",
+        "sensorConnectParam": {
+          "cmdPort": 7171,
+          "dataPort": 7474,
+          "isReverse": 0,
           "linkType": 0,
           "localIp": "192.168.2.100",
           "remoteIp": "192.168.2.1",
-          "cmdPort": 7171,
-          "dataPort": 7474,
+          "systemType": 2,
           "triggerMode": 1,
-          "triggerTimeMin": 0,
-          "isReverse": 0
-        }
-      ],
-      "jectorSystemParam": {
-        "enableSelfCheck": 0,
-        "maxNozzleCount": 512,
-        "maxSprayDurationMs": 200,
-        "valveCloseDelayMs": 0,
-        "minSprayDurationMs": 0,
-        "ejectorModuleCount": 2,
-        "jectorModules": [
-          {
-            "moduleId": 0,
-            "sprayWhat": 2,
-            "ejectorLayout": 1,
-            "isMergeSignal": 1,
-            "electricalDelayMs": 0,
-            "jectorUnits": [
-              {
-                "unitId": 0,
-                "controllerIp": "127.0.0.1",
-                "controllerPort": 5002,
-                "nozzleCount": 166,
-                "mapfiles": []
-              },
-              {
-                "unitId": 1,
-                "controllerIp": "127.0.0.1",
-                "controllerPort": 5003,
-                "nozzleCount": 166,
-                "mapfiles": []
-              }
-            ]
+          "triggerTimeMin": 0
+        },
+        "sensorDataParam": {
+          "channels": 1,
+          "depth": 2,
+          "detectorType": 0,
+          "headerLen": 4,
+          "integralTime": 200,
+          "sensorNum": 72,
+          "sensorPixels": 128,
+          "sensorType": 99
+        },
+        "serverPort": 2308,
+        "sizeGradeMinBigStone": 60,
+        "sizeGradeMinHugeStone": 100,
+        "sizeGradeMinSmallStone": 8,
+        "sprayOutThreshold": 0.2000000029802322,
+        "stitchNum": 1,
+        "uniformSegmentCount": 6,
+        "visionRegion": "",
+        "weightFitParam": {
+          "areaCoefficient": 1.100000023841858,
+          "mineDensity": 2.700000047683716,
+          "wasteDensity": 2.5,
+          "weightCoefficient": 1
+        },
+        "xrayParam": {
+          "rayAirPath": "air_9220_XrayEngine(High).txt",
+          "rayEmptyPath": "empty_9220_XrayEngine(High).txt",
+          "rayGradeCalculateCfgPath": "",
+          "rayIsSaveAir": 0,
+          "raySaveAirFileName": "AirDataCollect.txt",
+          "raySaveAirInterval": 300,
+          "xrayDualParam": {
+            "dualCorrectType": 0,
+            "dualHorizontalOffset": 0,
+            "dualProjectCorrectIndex": -1,
+            "dualScatterMethodCfgPath": "",
+            "dualSidesNumber": 0,
+            "dualVerticalOffset": 0,
+            "dualZScale": 0
           },
-          {
-            "moduleId": 1,
-            "ejectorLayout": 1,
-            "electricalDelayMs": 0,
-            "isMergeSignal": 0,
-            "jectorUnits": [
-              {
-                "unitId": 0,
-                "controllerIp": "127.0.0.1",
-                "controllerPort": 5003,
-                "nozzleCount": 166,
-                "mapfiles": []
-              },
-              {
-                "unitId": 1,
-                "controllerIp": "127.0.0.1",
-                "controllerPort": 5004,
-                "nozzleCount": 166,
-                "mapfiles": []
-              }
-            ]
+          "xrayMonoParam": {
+            "monoLogTransformId": 0
           }
-        ]
+        },
+        "zoomOutTimes": 1
       },
       "algorithmCommonParam": {
         "dbVersion": "",
-        "logConsoleLevel": 4,
-        "logFileLevel": 1,
-        "timeForImage": 80,
-        "warnTimeRatio": 0.800000011920929,
-        "memUsageMax": 0.800000011920929,
+        "imageEngines": [
+          "XrayEngine(High)",
+          "XrayEngine(Low)"
+        ],
         "imageSaveDir": "./SavedImage",
         "isSaveFrameInfo": 0,
-        "mixBaseEngine": "0.0",
+        "logConsoleLevel": 4,
+        "logFileLevel": 1,
+        "memUsageMax": 0.800000011920929,
+        "mixBaseEngine": "XrayEngine(High)",
         "mixFusionType": 0,
         "mixMergeType": 0,
-        "imageEngines": [
-          "XrayEngine"
-        ]
+        "timeForImage": 35,
+        "warnTimeRatio": 0.800000011920929
       },
-      "algorithmBasicParam": {
-        "imageEngine": "XrayEngine",
-        "engineType": 0,
-        "serverPort": 2308,
-        "gpuCardIndex": 0,
-        "debugHeight": 0,
-        "stitchNum": 1,
-        "visionRegion": "",
-        "prePartSprayHeight": 100,
-        "zoomOutTimes": 52000,
-        "backgroundThreshold": 52000,
-        "erodeSize": 5,
-        "dilateSize": 5,
-        "extractMethod": 5,
-        "detectModelId": 0,
-        "segmentModelId": 0,
-        "sizeGradeMinSmallStone": 8,
-        "sizeGradeMinBigStone": 40,
-        "sizeGradeMinHugeStone": 200,
-        "granuDistLowerBound": 10,
-        "granuDistUpperBound": 60,
-        "granuDistSegments": 5,
-        "uniformSegmentCount": 6,
-        "algorithmChoice": 0,
-        "recModelSmallIndex": -1,
-        "recModelBigIndex": -1,
-        "moveStoneHeightThreshold": 0,
-        "moveStoneOffsetRate": 0,
-        "reduceSprayOutLevel": 1,
-        "sprayOutThreshold": 0.2000000029802322,
-        "overSprayRadius": 4,
-        "printMark": 0,
-        "isSaveWithoutStone": 0,
-        "rtInfoUpdateInterval": 10,
-        "mixEngineEnabled": 1,
-        "mixVaildVision": "",
-        "mixMapMinArea": 0,
-        "xrayParam": {
-          "rayAirPath": "air_3460_XrayEngine.txt",
-          "rayEmptyPath": "empty_3460_XrayEngine.txt",
-          "rayIsSaveAir": 0,
-          "raySaveAirInterval": 300,
-          "raySaveAirFileName": "AirDataCollect.txt",
-          "rayGradeCalculateCfgPath": "",
-          "xrayMonoParam": {
-            "monoLogTransformId": 0
-          },
-          "xrayDualParam": {
-            "dualCorrectType": 0,
-            "dualSidesNumber": 0,
-            "dualVerticalOffset": 0,
-            "dualHorizontalOffset": 0,
-            "dualProjectCorrectIndex": 0,
-            "dualZScale": 0,
-            "dualScatterMethodCfgPath": ""
-          }
-        },
-        "cameraParam": {
-          "cameraSelectInputChannel": 0,
-          "cameraIsEnableImagingAnalysis": 1
-        },
-        "weightFitParam": {
-          "weightCoefficient": 1,
-          "mineDensity": 2.700000047683716,
-          "wasteDensity": 2.5,
-          "areaCoefficient": 1.100000023841858
-        },
-        "machineGeometryParam": {
-          "imageToSprayDistance": 885,
-          "rayToStoneDistance": 650,
-          "stoneToSensorDistance": 45,
-          "sensorLowToHighDistance": 5,
-          "imagingToSprayAvgSpeed": 3000,
-          "imagingSpeed": 3000,
-          "imagingWidth": 1300,
-          "sprayAdvanceUs": 0
-        },
-        "sensorDataParam": {
-          "detectorType": 0,
-          "headerLen": 4,
-          "channels": 1,
-          "depth": 2,
-          "sensorType": 4,
-          "sensorNum": 27,
-          "sensorPixels": 128,
-          "integralTime": 180
-        }
+      "productParam": {
+        "productType": 1,
+        "productTypes": null,
+        "subProductType": "C1700(2024)_MONO0.4(144)_MultiEngine",
+        "subProductTypes": null
       }
     }
   }

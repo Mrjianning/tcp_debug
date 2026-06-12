@@ -56,6 +56,36 @@ export function isSuccessfulParamReadResponse(data) {
   );
 }
 
+export function getAlgorithmBasicParam(receivedData) {
+  const algorithmBasicParam = receivedData && receivedData.algorithmBasicParam;
+  return algorithmBasicParam && typeof algorithmBasicParam === 'object' ? algorithmBasicParam : null;
+}
+
+export function getJectorSystemParam(receivedData) {
+  const algorithmBasicParam = getAlgorithmBasicParam(receivedData);
+  if (
+    algorithmBasicParam &&
+    algorithmBasicParam.jectorSystemParam &&
+    typeof algorithmBasicParam.jectorSystemParam === 'object'
+  ) {
+    return algorithmBasicParam.jectorSystemParam;
+  }
+  const jectorSystemParam = receivedData && receivedData.jectorSystemParam;
+  return jectorSystemParam && typeof jectorSystemParam === 'object' ? jectorSystemParam : null;
+}
+
+export function setJectorSystemParam(receivedData, jectorSystemParam) {
+  const data = receivedData && typeof receivedData === 'object' ? receivedData : {};
+  const normalized = normalizeJectorSystemParam(jectorSystemParam);
+  const algorithmBasicParam = getAlgorithmBasicParam(data);
+  if (algorithmBasicParam) {
+    algorithmBasicParam.jectorSystemParam = normalized;
+    return data;
+  }
+  data.jectorSystemParam = normalized;
+  return data;
+}
+
 export function buildSetParamsFromReceivedData(template, receivedData, jectorSystemOverride = null) {
   const data = cloneJson(template);
   if (!data.params || typeof data.params !== 'object') {
@@ -66,7 +96,7 @@ export function buildSetParamsFromReceivedData(template, receivedData, jectorSys
     if (!data.params.data || typeof data.params.data !== 'object') {
       data.params.data = {};
     }
-    data.params.data.jectorSystemParam = normalizeJectorSystemParam(jectorSystemOverride);
+    setJectorSystemParam(data.params.data, jectorSystemOverride);
   }
   return data;
 }
@@ -183,7 +213,7 @@ export function getMapFileDisplayIndex(mapfile) {
 }
 
 export function extractJectorSystemSummary(receivedData) {
-  const source = receivedData && receivedData.jectorSystemParam;
+  const source = getJectorSystemParam(receivedData);
   if (!source || typeof source !== 'object') return null;
   const normalized = normalizeJectorSystemParam(source);
   const modules = normalized.jectorModules.map((module) => {
