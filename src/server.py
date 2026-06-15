@@ -144,6 +144,38 @@ def parse_http_json_body(request_text):
     return json.loads(body)
 
 
+async def read_http_request(reader, initial_size=4096, max_header_size=65536):
+    request = await reader.read(initial_size)
+    while b"\r\n\r\n" not in request and len(request) < max_header_size:
+        chunk = await reader.read(initial_size)
+        if not chunk:
+            break
+        request += chunk
+
+    header_bytes, sep, body_bytes = request.partition(b"\r\n\r\n")
+    if not sep:
+        return request.decode("utf-8", errors="ignore")
+
+    header_text = header_bytes.decode("iso-8859-1", errors="ignore")
+    content_length = 0
+    for line in header_text.split("\r\n")[1:]:
+        name, colon, value = line.partition(":")
+        if colon and name.strip().lower() == "content-length":
+            try:
+                content_length = int(value.strip())
+            except ValueError:
+                content_length = 0
+            break
+
+    while len(body_bytes) < content_length:
+        chunk = await reader.read(content_length - len(body_bytes))
+        if not chunk:
+            break
+        body_bytes += chunk
+
+    return (header_bytes + b"\r\n\r\n" + body_bytes).decode("utf-8", errors="ignore")
+
+
 def get_primary_image_engine(received_data):
     if not isinstance(received_data, dict):
         return ""
@@ -612,8 +644,7 @@ def build_http_response(request_text, client_ip=None):
 
 async def http_handler(reader, writer):
     """极简 HTTP 静态文件服务器"""
-    request = await reader.read(4096)
-    request_text = request.decode('utf-8', errors='ignore')
+    request_text = await read_http_request(reader)
     peer = writer.get_extra_info("peername")
     client_ip = peer[0] if peer else None
 

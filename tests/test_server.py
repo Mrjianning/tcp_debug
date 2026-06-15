@@ -19,6 +19,20 @@ class FakeWebSocket:
         self.sent.append(message)
 
 
+class ChunkedReader:
+    def __init__(self, chunks):
+        self.chunks = list(chunks)
+
+    async def read(self, size):
+        if not self.chunks:
+            return b""
+        chunk = self.chunks.pop(0)
+        if len(chunk) <= size:
+            return chunk
+        self.chunks.insert(0, chunk[size:])
+        return chunk[:size]
+
+
 class ServerTests(unittest.IsolatedAsyncioTestCase):
     async def test_recv_forwarder_sends_messages_from_queue_to_websocket(self):
         websocket = FakeWebSocket()
@@ -80,6 +94,26 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertGreater(len(payload), 2 * 1024 * 1024)
         self.assertTrue(payload.endswith(b"\n"))
+
+    async def test_read_http_request_reads_full_large_post_body(self):
+        body = json.dumps({
+            "data": {
+                "algorithmBasicParam": {"imageEngine": "XrayEngine(High)"},
+                "largeText": "A" * 12000,
+            }
+        })
+        request = (
+            f"POST /api/json/update-set-params HTTP/1.1\r\n"
+            f"Content-Length: {len(body.encode('utf-8'))}\r\n"
+            "\r\n"
+            f"{body}"
+        ).encode("utf-8")
+        reader = ChunkedReader([request[:4096], request[4096:8192], request[8192:]])
+
+        request_text = await server.read_http_request(reader)
+
+        self.assertTrue(request_text.endswith(body))
+        self.assertEqual(json.loads(request_text.partition("\r\n\r\n")[2])["data"]["largeText"], "A" * 12000)
 
     async def test_websocket_large_message_limit_allows_model_payloads(self):
         self.assertIsNone(server.WS_MAX_SIZE)
