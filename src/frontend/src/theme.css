@@ -351,6 +351,36 @@ textarea {
   margin-bottom: 12px;
 }
 
+.jector-engine-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid var(--ubuntu-border);
+  border-radius: 8px;
+  background: var(--ubuntu-panel-2);
+}
+
+.jector-engine-label {
+  color: var(--ubuntu-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.jector-engine-label small {
+  color: #9b948c;
+  font-family: "Ubuntu Mono", "Cascadia Mono", "Consolas", monospace;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.jector-engine-input {
+  width: 260px;
+  min-width: 0;
+}
+
 .module-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(110px, 1fr));
@@ -389,13 +419,13 @@ textarea {
 .unit-table-header,
 .unit-row {
   display: grid;
-  grid-template-columns: 80px 150px 100px 90px minmax(160px, 1fr) 70px;
+  grid-template-columns: 80px 150px 100px 90px 90px minmax(160px, 1fr) 70px;
   gap: 8px;
   align-items: center;
 }
 
 .unit-table-header {
-  min-width: 690px;
+  min-width: 790px;
   padding: 8px 10px;
   background: var(--ubuntu-panel-2);
   color: var(--ubuntu-muted);
@@ -404,7 +434,7 @@ textarea {
 }
 
 .unit-row {
-  min-width: 690px;
+  min-width: 790px;
   padding: 8px 0;
   margin: 0 10px;
   border-top: 1px solid var(--ubuntu-border);

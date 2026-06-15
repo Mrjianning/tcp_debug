@@ -25,6 +25,7 @@ WS_MAX_SIZE = None
 BASE_DIR = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
 DIST_DIR = os.path.join(BASE_DIR, "dist")
 SET_PARAMS_TEMPLATE_FILE = os.path.join(BASE_DIR, "json", "setParams.json")
+GET_PARAMS_TEMPLATE_FILE = os.path.join(BASE_DIR, "json", "getParams.json")
 NETPLAN_FILE = os.environ.get("TCP_DEBUG_NETPLAN_FILE", "/etc/netplan/01-network-manager-all.yaml")
 
 
@@ -143,7 +144,43 @@ def parse_http_json_body(request_text):
     return json.loads(body)
 
 
-def update_set_params_template(received_data, template_path=None):
+def get_primary_image_engine(received_data):
+    if not isinstance(received_data, dict):
+        return ""
+    algorithm_basic_param = received_data.get("algorithmBasicParam")
+    if not isinstance(algorithm_basic_param, dict):
+        return ""
+    return str(algorithm_basic_param.get("imageEngine") or "").strip()
+
+
+def write_json_file(file_path, payload):
+    temp_path = f"{file_path}.tmp"
+    with open(temp_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    os.replace(temp_path, file_path)
+
+
+def update_get_params_template_engine(engine_name, template_path=None):
+    if not engine_name:
+        return None
+
+    target_path = template_path or GET_PARAMS_TEMPLATE_FILE
+    with open(target_path, "r", encoding="utf-8") as f:
+        template = json.load(f)
+
+    if not isinstance(template, dict):
+        raise ValueError("参数获取模板必须是JSON对象")
+    params = template.get("params")
+    if not isinstance(params, dict):
+        params = {}
+        template["params"] = params
+    params["engineName"] = engine_name
+    write_json_file(target_path, template)
+    return template
+
+
+def update_set_params_template(received_data, template_path=None, get_template_path=None):
     if not isinstance(received_data, dict):
         raise ValueError("参数数据必须是JSON对象")
 
@@ -157,13 +194,13 @@ def update_set_params_template(received_data, template_path=None):
     if not isinstance(params, dict):
         params = {}
         template["params"] = params
+    engine_name = get_primary_image_engine(received_data)
+    if engine_name:
+        params["engineName"] = engine_name
     params["data"] = received_data
 
-    temp_path = f"{target_path}.tmp"
-    with open(temp_path, "w", encoding="utf-8") as f:
-        json.dump(template, f, ensure_ascii=False, indent=2)
-        f.write("\n")
-    os.replace(temp_path, target_path)
+    write_json_file(target_path, template)
+    update_get_params_template_engine(engine_name, get_template_path)
     return template
 
 

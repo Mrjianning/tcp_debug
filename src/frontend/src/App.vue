@@ -53,12 +53,15 @@
 
         <JectorModal
           v-model:show="jectorModalVisible"
-          :working-jector-system-param="workingJectorSystemParam"
+          :active-engine-index="activeJectorEngineIndex"
+          :working-jector-system-params="workingJectorSystemParam"
           @add-module="addJectorModule"
           @add-unit="addJectorUnit"
           @confirm="confirmJectorModules"
           @remove-module="removeJectorModule"
           @remove-unit="removeJectorUnit"
+          @select-engine="selectJectorEngine"
+          @update-engine-name="updateJectorEngineName"
           @update-module="updateJectorModule"
           @update-unit="updateJectorUnit"
         />
@@ -116,7 +119,7 @@ import {
   extractModelListSummary,
   formatReceivedLogMessage,
   isSuccessfulParamReadResponse,
-  normalizeJectorSystemParam,
+  normalizeJectorSystemParams,
   removeJectorModuleFromParam,
   removeJectorUnitFromModule,
   shouldDisplayMessage,
@@ -210,6 +213,7 @@ const latestParamReadData = ref(null);
 const latestJectorSystemSummary = ref(null);
 const latestModelListSummary = ref(null);
 const workingJectorSystemParam = ref(null);
+const activeJectorEngineIndex = ref(0);
 const jectorModalVisible = ref(false);
 const modelListVisible = ref(false);
 const eventDefsVisible = ref(false);
@@ -478,37 +482,61 @@ async function handleModelFileSelected(type, event) {
 
 function showJectorModules() {
   if (latestJectorSystemSummary.value) {
-    workingJectorSystemParam.value = normalizeJectorSystemParam(latestJectorSystemSummary.value.raw);
+    workingJectorSystemParam.value = normalizeJectorSystemParams(latestJectorSystemSummary.value.raw);
+    activeJectorEngineIndex.value = 0;
   }
   jectorModalVisible.value = true;
 }
 
+function updateActiveJectorSystem(updater) {
+  const systems = Array.isArray(workingJectorSystemParam.value) ? workingJectorSystemParam.value : [];
+  const index = Math.min(Math.max(activeJectorEngineIndex.value, 0), systems.length - 1);
+  if (!systems[index]) return;
+  workingJectorSystemParam.value = systems.map((system, systemIndex) => (
+    systemIndex === index ? updater(system) : system
+  ));
+}
+
+function selectJectorEngine(index) {
+  const systems = Array.isArray(workingJectorSystemParam.value) ? workingJectorSystemParam.value : [];
+  if (index >= 0 && index < systems.length) {
+    activeJectorEngineIndex.value = index;
+  }
+}
+
+function updateJectorEngineName(value) {
+  updateActiveJectorSystem((system) => ({
+    ...system,
+    engineName: String(value || '').trim() || system.engineName,
+  }));
+}
+
 function addJectorModule() {
-  workingJectorSystemParam.value = addJectorModuleToParam(workingJectorSystemParam.value);
+  updateActiveJectorSystem((system) => addJectorModuleToParam(system));
 }
 
 function removeJectorModule(moduleIndex) {
-  workingJectorSystemParam.value = removeJectorModuleFromParam(workingJectorSystemParam.value, moduleIndex);
+  updateActiveJectorSystem((system) => removeJectorModuleFromParam(system, moduleIndex));
 }
 
 function addJectorUnit(moduleIndex) {
-  workingJectorSystemParam.value = addJectorUnitToModule(workingJectorSystemParam.value, moduleIndex);
+  updateActiveJectorSystem((system) => addJectorUnitToModule(system, moduleIndex));
 }
 
 function removeJectorUnit(moduleIndex, unitIndex) {
-  workingJectorSystemParam.value = removeJectorUnitFromModule(workingJectorSystemParam.value, moduleIndex, unitIndex);
+  updateActiveJectorSystem((system) => removeJectorUnitFromModule(system, moduleIndex, unitIndex));
 }
 
 function updateJectorModule(moduleIndex, field, value) {
-  workingJectorSystemParam.value = updateJectorModuleField(workingJectorSystemParam.value, moduleIndex, field, value);
+  updateActiveJectorSystem((system) => updateJectorModuleField(system, moduleIndex, field, value));
 }
 
 function updateJectorUnit(moduleIndex, unitIndex, field, value) {
-  workingJectorSystemParam.value = updateJectorUnitField(workingJectorSystemParam.value, moduleIndex, unitIndex, field, value);
+  updateActiveJectorSystem((system) => updateJectorUnitField(system, moduleIndex, unitIndex, field, value));
 }
 
 async function confirmJectorModules() {
-  if (!workingJectorSystemParam.value || !latestParamReadData.value) {
+  if (!Array.isArray(workingJectorSystemParam.value) || !workingJectorSystemParam.value.length || !latestParamReadData.value) {
     log('暂无可应用的参数读取数据');
     return;
   }

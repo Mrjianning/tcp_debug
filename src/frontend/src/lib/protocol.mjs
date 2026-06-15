@@ -61,28 +61,59 @@ export function getAlgorithmBasicParam(receivedData) {
   return algorithmBasicParam && typeof algorithmBasicParam === 'object' ? algorithmBasicParam : null;
 }
 
+export function getPrimaryImageEngine(receivedData) {
+  const algorithmBasicParam = getAlgorithmBasicParam(receivedData);
+  return String((algorithmBasicParam && algorithmBasicParam.imageEngine) || '').trim();
+}
+
+export function normalizeJectorSystemParams(jectorSystemParam) {
+  if (Array.isArray(jectorSystemParam)) {
+    return jectorSystemParam.map((item, index) => normalizeJectorSystemParam(item, `Engine${index + 1}`));
+  }
+  const normalized = normalizeJectorSystemParam(jectorSystemParam, 'Engine1');
+  return normalized.jectorModules.length || Object.keys(jectorSystemParam || {}).length ? [normalized] : [];
+}
+
 export function getJectorSystemParam(receivedData) {
+  const systems = getJectorSystemParams(receivedData);
+  return systems[0] || null;
+}
+
+export function getJectorSystemParams(receivedData) {
+  const topLevelJectorSystemParam = receivedData && receivedData.jectorSystemParam;
+  if (Array.isArray(topLevelJectorSystemParam) || (topLevelJectorSystemParam && typeof topLevelJectorSystemParam === 'object')) {
+    return normalizeJectorSystemParams(topLevelJectorSystemParam);
+  }
   const algorithmBasicParam = getAlgorithmBasicParam(receivedData);
   if (
     algorithmBasicParam &&
     algorithmBasicParam.jectorSystemParam &&
     typeof algorithmBasicParam.jectorSystemParam === 'object'
   ) {
-    return algorithmBasicParam.jectorSystemParam;
+    return normalizeJectorSystemParams(algorithmBasicParam.jectorSystemParam);
   }
-  const jectorSystemParam = receivedData && receivedData.jectorSystemParam;
-  return jectorSystemParam && typeof jectorSystemParam === 'object' ? jectorSystemParam : null;
+  return [];
 }
 
 export function setJectorSystemParam(receivedData, jectorSystemParam) {
+  const systems = Array.isArray(jectorSystemParam) ? jectorSystemParam : [jectorSystemParam];
+  return setJectorSystemParams(receivedData, systems);
+}
+
+export function setJectorSystemParams(receivedData, jectorSystemParams) {
   const data = receivedData && typeof receivedData === 'object' ? receivedData : {};
-  const normalized = normalizeJectorSystemParam(jectorSystemParam);
+  const normalized = normalizeJectorSystemParams(jectorSystemParams);
   const algorithmBasicParam = getAlgorithmBasicParam(data);
-  if (algorithmBasicParam) {
-    algorithmBasicParam.jectorSystemParam = normalized;
+  const existingTopLevel = data.jectorSystemParam;
+  const existingNested = algorithmBasicParam && algorithmBasicParam.jectorSystemParam;
+  const shouldWriteArray = Array.isArray(existingTopLevel) || Array.isArray(existingNested) || normalized.length > 1;
+  const nextValue = shouldWriteArray ? normalized : normalized[0];
+
+  if (existingTopLevel !== undefined || !algorithmBasicParam) {
+    data.jectorSystemParam = nextValue;
     return data;
   }
-  data.jectorSystemParam = normalized;
+  algorithmBasicParam.jectorSystemParam = nextValue;
   return data;
 }
 
@@ -91,12 +122,16 @@ export function buildSetParamsFromReceivedData(template, receivedData, jectorSys
   if (!data.params || typeof data.params !== 'object') {
     data.params = {};
   }
+  const imageEngine = getPrimaryImageEngine(receivedData);
+  if (imageEngine) {
+    data.params.engineName = imageEngine;
+  }
   data.params.data = cloneJson(receivedData);
   if (jectorSystemOverride) {
     if (!data.params.data || typeof data.params.data !== 'object') {
       data.params.data = {};
     }
-    setJectorSystemParam(data.params.data, jectorSystemOverride);
+    setJectorSystemParams(data.params.data, Array.isArray(jectorSystemOverride) ? jectorSystemOverride : [jectorSystemOverride]);
   }
   return data;
 }
@@ -123,7 +158,7 @@ export function createDefaultJectorModule(moduleId = 0) {
   };
 }
 
-export function normalizeJectorSystemParam(jectorSystemParam) {
+export function normalizeJectorSystemParam(jectorSystemParam, fallbackEngineName = 'Engine') {
   const source = jectorSystemParam && typeof jectorSystemParam === 'object' ? cloneJson(jectorSystemParam) : {};
   const modules = Array.isArray(source.jectorModules) ? source.jectorModules : [];
   const normalizedModules = modules.map((module, moduleIndex) => {
@@ -135,6 +170,7 @@ export function normalizeJectorSystemParam(jectorSystemParam) {
 
   return Object.assign(
     {
+      engineName: fallbackEngineName,
       ejectorModuleCount: normalizedModules.length,
       enableSelfCheck: 0,
       maxNozzleCount: 0,
@@ -213,10 +249,10 @@ export function getMapFileDisplayIndex(mapfile) {
 }
 
 export function extractJectorSystemSummary(receivedData) {
-  const source = getJectorSystemParam(receivedData);
-  if (!source || typeof source !== 'object') return null;
-  const normalized = normalizeJectorSystemParam(source);
-  const modules = normalized.jectorModules.map((module) => {
+  const systems = getJectorSystemParams(receivedData);
+  if (!systems.length) return null;
+  const engines = systems.map((normalized, engineIndex) => {
+    const modules = normalized.jectorModules.map((module) => {
     const units = module.jectorUnits.map((unit) => {
       const mapfiles = Array.isArray(unit.mapfiles) ? unit.mapfiles : [];
       return {
@@ -228,6 +264,7 @@ export function extractJectorSystemSummary(receivedData) {
         mapFileName2: getMapFileDisplayName(mapfiles[1]),
         nozzleCount: unit.nozzleCount,
         unitId: unit.unitId,
+        valveRowIndex: unit.valveRowIndex,
       };
     });
     return {
@@ -239,11 +276,19 @@ export function extractJectorSystemSummary(receivedData) {
       units,
     };
   });
+    return {
+      engineName: normalized.engineName || `Engine${engineIndex + 1}`,
+      moduleCount: modules.length,
+      modules,
+      raw: normalized,
+      totalUnitCount: modules.reduce((sum, module) => sum + module.units.length, 0),
+    };
+  });
   return {
-    moduleCount: modules.length,
-    modules,
-    raw: normalized,
-    totalUnitCount: modules.reduce((sum, module) => sum + module.units.length, 0),
+    engines,
+    moduleCount: engines.reduce((sum, engine) => sum + engine.moduleCount, 0),
+    raw: systems,
+    totalUnitCount: engines.reduce((sum, engine) => sum + engine.totalUnitCount, 0),
   };
 }
 

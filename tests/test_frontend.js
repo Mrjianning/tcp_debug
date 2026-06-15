@@ -82,10 +82,10 @@ assert(appVue.includes('message.error'), 'network apply should show failure feed
 assert(appVue.includes('dialog.success'), 'network apply success should open a result dialog');
 assert(appVue.includes('dialog.error'), 'network apply failure should open a result dialog');
 const jectorModalVue = readText('src', 'frontend', 'src', 'components', 'JectorModal.vue');
-for (const label of ['打击类型', '喷阀布局', '合并信号', '电气延迟', '单元ID', '控制器IP', '控制器端口', '喷嘴数量', 'map文件', '操作']) {
+for (const label of ['引擎', '打击类型', '喷阀布局', '合并信号', '电气延迟', '单元ID', '控制器IP', '控制器端口', '喷嘴数量', '阀行索引', 'map文件', '操作']) {
   assert(jectorModalVue.includes(label), `Jector modal should show visible field label "${label}"`);
 }
-for (const fieldName of ['sprayWhat', 'ejectorLayout', 'isMergeSignal', 'electricalDelayMs']) {
+for (const fieldName of ['engineName', 'sprayWhat', 'ejectorLayout', 'isMergeSignal', 'electricalDelayMs', 'valveRowIndex']) {
   assert(jectorModalVue.includes(`<small>${fieldName}</small>`), `Jector modal should show raw field name ${fieldName}`);
 }
 for (const componentName of [
@@ -189,8 +189,11 @@ assert(buildBat.includes('call npm run build'), 'Windows build script should cal
     'buildSetParamsFromReceivedData',
     'formatReceivedLogMessage',
     'getJectorSystemParam',
+    'getJectorSystemParams',
+    'getPrimaryImageEngine',
     'normalizeJectorSystemParam',
     'setJectorSystemParam',
+    'setJectorSystemParams',
     'shouldDisplayMessage',
   ]) {
     assert(typeof protocol[fn] === 'function', `protocol.mjs should export ${fn}`);
@@ -238,18 +241,27 @@ assert(buildBat.includes('call npm run build'), 'Windows build script should cal
   const newParamData = {
     algorithmBasicParam: {
       imageEngine: 'XrayEngine(High)',
-      jectorSystemParam: {
+    },
+    jectorSystemParam: [
+      {
+        engineName: 'Engine1',
         enableSelfCheck: 1,
         maxNozzleCount: 512,
         jectorModules: [
           {
             moduleId: 0,
             sprayWhat: 0,
-            jectorUnits: [{ unitId: 1, controllerIp: '192.168.3.88', controllerPort: 5000 }],
+            jectorUnits: [{ unitId: 1, controllerIp: '192.168.3.88', controllerPort: 5000, valveRowIndex: 3 }],
           },
         ],
       },
-    },
+      {
+        engineName: 'Engine2',
+        enableSelfCheck: 1,
+        maxNozzleCount: 256,
+        jectorModules: [{ moduleId: 1, sprayWhat: 2, jectorUnits: [] }],
+      },
+    ],
   };
   const oldParamData = {
     jectorSystemParam: {
@@ -257,23 +269,26 @@ assert(buildBat.includes('call npm run build'), 'Windows build script should cal
       jectorModules: [{ moduleId: 1, sprayWhat: 2, jectorUnits: [] }],
     },
   };
-  assert(protocol.getJectorSystemParam(newParamData).enableSelfCheck === 1, 'new param structure should expose nested jectorSystemParam');
+  assert(protocol.getPrimaryImageEngine(newParamData) === 'XrayEngine(High)', 'algorithmBasicParam.imageEngine should be the primary command engineName source');
+  assert(protocol.getJectorSystemParams(newParamData).length === 2, 'new param structure should expose multiple jector engines');
+  assert(protocol.getJectorSystemParams(newParamData)[0].engineName === 'Engine1', 'new param structure should keep engineName on each jector engine');
+  assert(protocol.getJectorSystemParams(newParamData)[0].jectorModules[0].jectorUnits[0].valveRowIndex === 3, 'new param structure should preserve valveRowIndex');
   assert(protocol.getJectorSystemParam(oldParamData).enableSelfCheck === 0, 'old param structure should still expose top-level jectorSystemParam');
 
-  const editedJectorSystem = {
-    enableSelfCheck: 0,
-    maxNozzleCount: 128,
-    jectorModules: [{ moduleId: 9, sprayWhat: 2, jectorUnits: [] }],
-  };
-  const newApplied = protocol.buildSetParamsFromReceivedData({ params: { data: {} } }, newParamData, editedJectorSystem);
+  const editedJectorSystems = protocol.getJectorSystemParams(newParamData);
+  editedJectorSystems[1].maxNozzleCount = 128;
+  editedJectorSystems[1].jectorModules = [{ moduleId: 9, sprayWhat: 2, jectorUnits: [] }];
+  const newApplied = protocol.buildSetParamsFromReceivedData({ params: { data: {} } }, newParamData, editedJectorSystems);
   assert(
-    newApplied.params.data.algorithmBasicParam.jectorSystemParam.maxNozzleCount === 128,
-    'new param structure should write edited jectorSystemParam under algorithmBasicParam',
+    newApplied.params.data.jectorSystemParam[1].maxNozzleCount === 128,
+    'new param structure should write edited jectorSystemParam array back to params.data.jectorSystemParam',
   );
   assert(
-    !Object.prototype.hasOwnProperty.call(newApplied.params.data, 'jectorSystemParam'),
-    'new param structure should not create legacy top-level jectorSystemParam when nested location exists',
+    newApplied.params.engineName === 'XrayEngine(High)',
+    'set command engineName should follow algorithmBasicParam.imageEngine',
   );
+  assert(newApplied.params.data.jectorSystemParam[1].engineName === 'Engine2', 'edited jector engine should preserve engineName');
+  const editedJectorSystem = { enableSelfCheck: 0, maxNozzleCount: 128, jectorModules: [{ moduleId: 9, sprayWhat: 2, jectorUnits: [] }] };
   const oldApplied = protocol.buildSetParamsFromReceivedData({ params: { data: {} } }, oldParamData, editedJectorSystem);
   assert(oldApplied.params.data.jectorSystemParam.maxNozzleCount === 128, 'old param structure should keep writing top-level jectorSystemParam');
 

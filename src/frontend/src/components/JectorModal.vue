@@ -1,14 +1,32 @@
 <template>
-  <NModal :show="show" preset="card" title="喷阀模块管理" style="width: 72vw; max-width: 1100px" @update:show="$emit('update:show', $event)">
-    <template v-if="workingJectorSystemParam">
+  <NModal :show="show" preset="card" title="喷阀模块管理" style="width: 78vw; max-width: 1180px" @update:show="$emit('update:show', $event)">
+    <template v-if="activeJectorSystemParam">
       <NSpace justify="space-between" align="center" style="margin-bottom: 12px">
         <NSpace>
-          <NTag>喷阀套数 {{ workingJectorSystemParam.jectorModules.length }}</NTag>
+          <NTag>引擎 {{ activeJectorSystemParam.engineName }}</NTag>
+          <NTag>喷阀套数 {{ activeJectorSystemParam.jectorModules.length }}</NTag>
           <NTag>单元总数 {{ totalUnitCount }}</NTag>
         </NSpace>
         <NButton type="primary" @click="$emit('add-module')">新增模块</NButton>
       </NSpace>
-      <NCard v-for="(module, moduleIndex) in workingJectorSystemParam.jectorModules" :key="moduleIndex" size="small" class="modal-section">
+      <div class="jector-engine-toolbar">
+        <span class="jector-engine-label">引擎 <small>engineName</small></span>
+        <NButton
+          v-for="(system, index) in workingJectorSystemParams"
+          :key="`${system.engineName}-${index}`"
+          size="small"
+          :type="activeEngineIndex === index ? 'primary' : 'default'"
+          @click="$emit('select-engine', index)"
+        >
+          {{ system.engineName || `Engine${index + 1}` }}
+        </NButton>
+        <NInput
+          class="jector-engine-input"
+          :value="activeJectorSystemParam.engineName"
+          @update:value="$emit('update-engine-name', $event)"
+        />
+      </div>
+      <NCard v-for="(module, moduleIndex) in activeJectorSystemParam.jectorModules" :key="moduleIndex" size="small" class="modal-section">
         <template #header>模块 {{ module.moduleId }}</template>
         <template #header-extra>
           <NSpace>
@@ -40,6 +58,7 @@
             <span>控制器IP</span>
             <span>控制器端口</span>
             <span>喷嘴数量</span>
+            <span>阀行索引 <small>valveRowIndex</small></span>
             <span>map文件</span>
             <span>操作</span>
           </div>
@@ -48,6 +67,7 @@
             <NInput :value="unit.controllerIp" @update:value="$emit('update-unit', moduleIndex, unitIndex, 'controllerIp', $event)" />
             <NInput :value="String(unit.controllerPort)" @update:value="$emit('update-unit', moduleIndex, unitIndex, 'controllerPort', $event)" />
             <NInput :value="String(unit.nozzleCount)" @update:value="$emit('update-unit', moduleIndex, unitIndex, 'nozzleCount', $event)" />
+            <NInput :value="String(unit.valveRowIndex)" @update:value="$emit('update-unit', moduleIndex, unitIndex, 'valveRowIndex', $event)" />
             <span class="map-file-list">{{ (unit.mapfiles || []).map(item => item.name || item.fileName).filter(Boolean).join(', ') || '无 map 文件' }}</span>
             <NButton size="small" type="error" ghost @click="$emit('remove-unit', moduleIndex, unitIndex)">删除</NButton>
           </div>
@@ -69,8 +89,9 @@ import { computed } from 'vue';
 import { NButton, NCard, NEmpty, NInput, NModal, NSpace, NTag } from 'naive-ui';
 
 const props = defineProps({
+  activeEngineIndex: { type: Number, default: 0 },
   show: { type: Boolean, required: true },
-  workingJectorSystemParam: { type: Object, default: null },
+  workingJectorSystemParams: { type: Array, default: () => [] },
 });
 
 defineEmits([
@@ -79,14 +100,18 @@ defineEmits([
   'confirm',
   'remove-module',
   'remove-unit',
+  'select-engine',
+  'update-engine-name',
   'update-module',
   'update-unit',
   'update:show',
 ]);
 
+const activeJectorSystemParam = computed(() => props.workingJectorSystemParams[props.activeEngineIndex] || null);
+
 const totalUnitCount = computed(() =>
-  props.workingJectorSystemParam
-    ? props.workingJectorSystemParam.jectorModules.reduce((sum, module) => sum + module.jectorUnits.length, 0)
+  activeJectorSystemParam.value
+    ? activeJectorSystemParam.value.jectorModules.reduce((sum, module) => sum + module.jectorUnits.length, 0)
     : 0,
 );
 </script>

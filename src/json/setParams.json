@@ -7,7 +7,7 @@
   "params": {
     "operationCommand": 6,
     "paramType": 1,
-    "engineName": "XrayEngine",
+    "engineName": "XrayEngine(High)",
     "data": {
       "algorithmBasicParam": {
         "algorithmChoice": 0,
@@ -28,50 +28,6 @@
         "granuDistUpperBound": 60,
         "imageEngine": "XrayEngine(High)",
         "isSaveWithoutStone": 0,
-        "jectorSystemParam": {
-          "ejectorModuleCount": 2,
-          "enableSelfCheck": 1,
-          "jectorModules": [
-            {
-              "ejectorLayout": 0,
-              "electricalDelayMs": 0,
-              "isMergeSignal": 0,
-              "jectorUnits": [
-                {
-                  "controllerIp": "192.168.3.88",
-                  "controllerPort": 5000,
-                  "mapfiles": [],
-                  "nozzleCount": 0,
-                  "unitId": 1,
-                  "valveRowIndex": 0
-                }
-              ],
-              "moduleId": 0,
-              "sprayWhat": 0
-            },
-            {
-              "ejectorLayout": 0,
-              "electricalDelayMs": 0,
-              "isMergeSignal": 0,
-              "jectorUnits": [
-                {
-                  "controllerIp": "192.168.3.90",
-                  "controllerPort": 5000,
-                  "mapfiles": [],
-                  "nozzleCount": 0,
-                  "unitId": 2,
-                  "valveRowIndex": 0
-                }
-              ],
-              "moduleId": 1,
-              "sprayWhat": 2
-            }
-          ],
-          "maxNozzleCount": 512,
-          "maxSprayDurationMs": 100,
-          "minSprayDurationMs": 0,
-          "valveCloseDelayMs": 0
-        },
         "machineGeometryParam": {
           "imageToSprayDistance": 245,
           "imagingSpeed": 1468,
@@ -169,6 +125,98 @@
         "timeForImage": 35,
         "warnTimeRatio": 0.800000011920929
       },
+      "jectorSystemParam": [
+        {
+            "engineName": "Engine1",
+            "ejectorModuleCount": 2,
+            "enableSelfCheck": 1,
+            "jectorModules": [
+                {
+                    "ejectorLayout": 0,
+                    "electricalDelayMs": 0,
+                    "isMergeSignal": 0,
+                    "jectorUnits": [
+                        {
+                            "controllerIp": "192.168.3.89",
+                            "controllerPort": 5000,
+                            "mapfiles": [],
+                            "nozzleCount": 0,
+                            "unitId": 7,
+                            "valveRowIndex": 0
+                        }
+                    ],
+                    "moduleId": 0,
+                    "sprayWhat": 0
+                },
+                {
+                    "ejectorLayout": 0,
+                    "electricalDelayMs": 0,
+                    "isMergeSignal": 0,
+                    "jectorUnits": [
+                        {
+                            "controllerIp": "192.168.3.90",
+                            "controllerPort": 5000,
+                            "mapfiles": [],
+                            "nozzleCount": 0,
+                            "unitId": 8,
+                            "valveRowIndex": 0
+                        }
+                    ],
+                    "moduleId": 1,
+                    "sprayWhat": 2
+                }
+            ],
+            "maxNozzleCount": 512,
+            "maxSprayDurationMs": 100,
+            "minSprayDurationMs": 0,
+            "valveCloseDelayMs": 0
+        },
+         {
+            "engineName": "Engine2",
+            "ejectorModuleCount": 2,
+            "enableSelfCheck": 1,
+            "jectorModules": [
+                {
+                    "ejectorLayout": 0,
+                    "electricalDelayMs": 0,
+                    "isMergeSignal": 0,
+                    "jectorUnits": [
+                        {
+                            "controllerIp": "192.168.3.89",
+                            "controllerPort": 5000,
+                            "mapfiles": [],
+                            "nozzleCount": 0,
+                            "unitId": 7,
+                            "valveRowIndex": 0
+                        }
+                    ],
+                    "moduleId": 0,
+                    "sprayWhat": 0
+                },
+                {
+                    "ejectorLayout": 0,
+                    "electricalDelayMs": 0,
+                    "isMergeSignal": 0,
+                    "jectorUnits": [
+                        {
+                            "controllerIp": "192.168.3.90",
+                            "controllerPort": 5000,
+                            "mapfiles": [],
+                            "nozzleCount": 0,
+                            "unitId": 8,
+                            "valveRowIndex": 0
+                        }
+                    ],
+                    "moduleId": 1,
+                    "sprayWhat": 2
+                }
+            ],
+            "maxNozzleCount": 512,
+            "maxSprayDurationMs": 100,
+            "minSprayDurationMs": 0,
+            "valveCloseDelayMs": 0
+        }
+    ],
       "productParam": {
         "productType": 1,
         "productTypes": null,
